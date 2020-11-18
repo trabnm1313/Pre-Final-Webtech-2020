@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        .imageCard{
+            width: 640px !important;
+            max-width: 640px !important;
+        }
+
+        .border-grey{
+            border: 0.5px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+    </div>
+
+    <script>
+        let jsonData = fetch("./source/json/ezquiz.json").then( rawData => {return rawData.json()})
+        jsonData.then(async data => {
+            let container = document.getElementsByClassName("container")[0]
+            let cardCounter = 0;
+            let imageCounter = 0;
+            for(let i=0; i < data.tracks.items.length; i++){
+                let album = data.tracks.items[i].album
+                console.log(data.tracks.items[2].album, i)
+
+                //DOM
+                let cardRow = document.createElement("div")
+                let imageCard = document.createElement("div")
+                let imageRow = document.createElement("div")
+                let desRow = document.createElement("div")
+
+                //Set attributes
+                cardRow.setAttribute("class", "cardRow row mt-4")
+                imageCard.setAttribute("class", "col-3 mx-auto imageCard rounded p-0 border-grey")
+                imageRow.setAttribute("class", "row imageRow no-gutters border-grey")
+                desRow.setAttribute("class", "row desRow no-gutters p-2")
+                
+                //Set source
+                imageRow.innerHTML = "<div class=\"row imageRow no-gutters border-grey\"><img class=\"image w-100\" src='" + album.images[0].url + "'></div>"
+                desRow.innerHTML = "<div class=\"row desRow no-gutters p-2\"><p><b>" + album.name + "</b> <br>Artist: " + album.artists[0].name + " <br>Release date: " + album.release_date + " <br>Available: " + album.available_markets.length + " countries </p></div>"
+                
+                //Append child
+                if((imageCounter) % 3 == 0 && imageCounter != 0) cardCounter++
+                if(cardCounter == 0 || cardCounter % 3 == 0) container.appendChild(cardRow.cloneNode(true))
+                
+                let cardRows = document.getElementsByClassName("cardRow")[cardCounter]
+                cardRows.appendChild(imageCard.cloneNode(true))
+
+                let imageCards = document.getElementsByClassName("imageCard")[imageCounter]
+                imageCards.appendChild(imageRow.cloneNode(true))
+                imageCards.appendChild(desRow.cloneNode(true))
+                
+                //Counter
+                imageCounter++
+            
+            }
+        })
+    </script>
+</body>
+</html>
